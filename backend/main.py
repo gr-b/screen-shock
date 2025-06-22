@@ -36,7 +36,10 @@ app.add_middleware(
 static_dir = Path(__file__).parent / "static"
 if static_dir.exists():
     # Mount static files for CSS, JS, images, etc.
-    app.mount("/static", StaticFiles(directory=static_dir), name="static")
+    # React build puts CSS/JS in build/static/, so we need to mount the nested static directory
+    static_assets_dir = static_dir / "static"
+    if static_assets_dir.exists():
+        app.mount("/static", StaticFiles(directory=static_assets_dir), name="static")
 
 class GenerateConfigRequest(BaseModel):
     description: str
