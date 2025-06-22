@@ -16,8 +16,8 @@ const Header = () => {
           <h2 className="header-title">Screen Shock</h2>
         </div>
         <nav className="header-nav">
-          <a href="#about" className="nav-link">About</a>
-          <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="nav-link">Github</a>
+          <a href="https://www.sundai.club/projects/02ab6bd6-3e51-4895-9c95-6c886ce9a818" className="nav-link">About</a>
+          <a href="https://github.com/gr-b/screen-shock" target="_blank" rel="noopener noreferrer" className="nav-link">Github</a>
         </nav>
       </div>
     </header>
