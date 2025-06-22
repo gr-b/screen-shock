@@ -111,7 +111,7 @@ async def evaluate_capture_for_trigger(payload: EvaluateCaptureRequest):
     blocklist_dicts = [b.model_dump() for b in payload.blocklist]
     
     result = await get_status_client(
-        model="openrouter/openai/gpt-4o-2024-11-20",
+        model="openrouter/google/gemini-2.5-flash",
         image_base64=payload.screenshot,
         allowlist=allowlist_dicts,
         blocklist=blocklist_dicts

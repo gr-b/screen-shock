@@ -92,7 +92,7 @@ class ResponseSchema(BaseModel):
 
 
 class StatusResponseSchema(BaseModel):
-    result: dict[str, bool]
+    result: Dict[str, bool]
 
 
 class CheckSchema(BaseModel):
@@ -138,7 +138,7 @@ async def generate_list_client(
         }
             
     except Exception as e:
-        logger.error(f"Error in generate_list_client: {e}", exc_info=True)
+        logger.error(f"Error in generate_list_client: {str(e)}", exc_info=True)
         return {
             "error": str(e),
             "content": None,
@@ -195,16 +195,36 @@ async def get_status_client(
         response = await acompletion(
             model=model,
             messages=messages,
-            response_format=StatusResponseSchema
+            # Remove response_format to avoid schema issues
         )
         
         raw_content = response.choices[0].message.content
         logger.debug(f"Raw LLM response content: {raw_content}")
 
-        return {
-            "content": json.loads(raw_content)['result'],
-            "model": response.model,
-        }
+        # Parse the JSON response, extracting and decoding any JSON code block if present
+        try:
+            # Try to extract JSON from a code block if present
+            if raw_content.strip().startswith("```json"):
+                # Remove the code block markers
+                json_str = raw_content.strip()
+                json_str = json_str.lstrip("`").lstrip("json").strip()
+                if json_str.endswith("```"):
+                    json_str = json_str[:-3].strip()
+            else:
+                json_str = raw_content
+
+            parsed_response = json.loads(json_str)
+            return {
+                "content": parsed_response.get('result', {}),
+                "model": response.model,
+            }
+        except json.JSONDecodeError:
+            # If it's not valid JSON, return empty result
+            logger.warning(f"Failed to parse JSON response: {raw_content}")
+            return {
+                "content": {},
+                "model": response.model,
+            }
             
     except Exception as e:
         logger.error(f"Error in get_status_client: {str(e)}", exc_info=True)
