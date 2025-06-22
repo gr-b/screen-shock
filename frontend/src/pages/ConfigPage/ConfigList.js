@@ -43,7 +43,7 @@ const ConfigList = ({ items, onChange, placeholder }) => {
             {displayItems.length > 1 && (
               <Button
                 variant="danger"
-                size="small"
+                size="medium"
                 onClick={() => removeItem(index)}
                 className="remove-btn"
               >

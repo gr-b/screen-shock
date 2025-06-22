@@ -18,6 +18,8 @@
   transition: all 0.2s ease-in-out;
   background: var(--card-background);
   font-family: inherit;
+  height: 48px;
+  box-sizing: border-box;
 }
 
 .input:focus, .textarea:focus {
@@ -31,6 +33,7 @@
 .textarea {
   resize: vertical;
   min-height: 120px;
+  height: auto;
 }
 
 .input-error {

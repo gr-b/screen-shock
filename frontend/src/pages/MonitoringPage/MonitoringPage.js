@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import './MonitoringPage.css';
 import Button from '../../components/Button/Button';
 import { useScreenCapture } from '../../hooks/useScreenCapture';
-import { mockApi } from '../../services/mockApi';
+import api from '../../services/api';
 
 const MonitoringPage = ({ config, onStop }) => {
   const [stats, setStats] = useState({ captures: 0, triggers: 0 });
@@ -13,7 +13,7 @@ const MonitoringPage = ({ config, onStop }) => {
   const handleCapture = useCallback(async (base64Image) => {
     try {
       // Evaluate the capture
-      const triggers = await mockApi.evaluateCaptureForTrigger(
+      const triggers = await api.evaluateCaptureForTrigger(
         base64Image,
         config.blocklist,
         config.allowlist
@@ -38,11 +38,13 @@ const MonitoringPage = ({ config, onStop }) => {
       if (activeTriggers.length > 0) {
         setStats(prev => ({ ...prev, triggers: prev.triggers + 1 }));
         
-        // Deliver stimulus for the first trigger only
-        const triggerReason = activeTriggers[0][0];
-        await mockApi.deliverStimulus(config.pavlokToken, triggerReason);
-        
-        console.log(`Stimulus delivered for: ${triggerReason}`);
+        // Deliver stimulus (only deliver one stimulus per capture)
+        try {
+          await api.deliverStimulus(config.pavlokToken);
+          console.log(`Stimulus delivered for triggers:`, activeTriggers.map(([key]) => key));
+        } catch (stimulusError) {
+          console.error('Failed to deliver stimulus:', stimulusError);
+        }
       }
       
     } catch (error) {
