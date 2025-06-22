@@ -32,8 +32,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy backend source code
 COPY backend/ .
 
-# Copy built frontend static files from previous stage
-COPY --from=frontend-builder /app/frontend/build ./static
+# Copy built frontend files from previous stage
+# Copy index.html to static directory
+COPY --from=frontend-builder /app/frontend/build/index.html ./static/
+# Copy static assets (CSS, JS) to static directory
+COPY --from=frontend-builder /app/frontend/build/static ./static/static
 
 # Create a non-root user for security
 RUN groupadd -r appgroup && useradd -r -g appgroup appuser

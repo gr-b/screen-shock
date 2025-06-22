@@ -35,6 +35,7 @@ app.add_middleware(
 # Static file serving
 static_dir = Path(__file__).parent / "static"
 if static_dir.exists():
+    # Mount static files for CSS, JS, images, etc.
     app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 class GenerateConfigRequest(BaseModel):
@@ -59,28 +60,6 @@ async def health_check():
 @app.get("/api/")
 async def api_root():
     return {"message": "Screen Shock API is running"}
-
-# Serve React app
-@app.get("/")
-async def serve_frontend():
-    """Serve the React frontend index.html"""
-    static_file = static_dir / "index.html"
-    if static_file.exists():
-        return FileResponse(static_file)
-    return {"message": "Frontend not built. Run in development mode or build the frontend first."}
-
-# Catch-all route for React Router (SPA routing)
-@app.get("/{path:path}")
-async def serve_frontend_routes(path: str):
-    """Serve React app for all non-API routes (SPA routing)"""
-    # Don't serve SPA for API routes or static assets
-    if path.startswith("api/") or path.startswith("static/"):
-        raise HTTPException(status_code=404, detail="Not found")
-    
-    static_file = static_dir / "index.html"
-    if static_file.exists():
-        return FileResponse(static_file)
-    raise HTTPException(status_code=404, detail="Frontend not found")
 
 @app.post("/api/generate-config", response_model=ResponseSchema)
 async def generate_config(payload: GenerateConfigRequest):
@@ -173,6 +152,27 @@ async def deliver_stimulus(payload: DeliverStimulusRequest):
         raise HTTPException(status_code=500, detail="Timeout connecting to Pavlok API")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to deliver stimulus: {str(e)}")
+
+# Serve React app for all non-API routes (SPA routing) - MUST BE LAST
+@app.get("/{path:path}")
+async def serve_frontend_routes(path: str = ""):
+    """Serve React app for all non-API routes (SPA routing)"""
+    # Don't serve SPA for API routes or static assets
+    if path.startswith("api/") or path.startswith("static/"):
+        raise HTTPException(status_code=404, detail="Not found")
+    
+    static_file = static_dir / "index.html"
+    if static_file.exists():
+        return FileResponse(static_file, media_type="text/html")
+    else:
+        # Debug: show what files are actually available
+        files = list(static_dir.glob("*")) if static_dir.exists() else []
+        return {
+            "error": "Frontend not found", 
+            "static_dir": str(static_dir),
+            "static_dir_exists": static_dir.exists(),
+            "files": [str(f) for f in files]
+        }
 
 if __name__ == "__main__":
     import uvicorn
