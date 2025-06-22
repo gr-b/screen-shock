@@ -1,0 +1,51 @@
+.input-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+.input-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: var(--spacing-xs);
+  color: var(--text-primary);
+}
+
+.input, .textarea {
+  width: 100%;
+  padding: var(--spacing-sm);
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  transition: all 0.2s ease-in-out;
+  background: var(--card-background);
+  font-family: inherit;
+}
+
+.input:focus, .textarea:focus {
+  outline: none;
+  border: 2px solid transparent;
+  background: linear-gradient(white, white) padding-box,
+              var(--rainbow-accent) border-box;
+  box-shadow: var(--shadow-rainbow);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.input-error {
+  border-color: #ff6b6b;
+}
+
+.input-error:focus {
+  background: linear-gradient(white, white) padding-box,
+              #ff6b6b border-box;
+  box-shadow: 0 0 20px rgba(255, 107, 107, 0.2);
+}
+
+.input-error-text {
+  display: block;
+  color: #ff6b6b;
+  font-size: 0.875rem;
+  margin-top: var(--spacing-xs);
+}

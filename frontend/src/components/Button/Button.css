@@ -1,0 +1,109 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--border-radius-large);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  font-family: inherit;
+}
+
+.btn:hover:not(.btn-disabled) {
+  transform: scale(1.05);
+}
+
+.btn:active:not(.btn-disabled) {
+  transform: scale(0.98);
+}
+
+/* Sizes */
+.btn-small {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: 0.9rem;
+  min-height: 36px;
+}
+
+.btn-medium {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-size: 1rem;
+  min-height: 48px;
+}
+
+.btn-large {
+  padding: var(--spacing-md) var(--spacing-xl);
+  font-size: 1.1rem;
+  min-height: 56px;
+  width: 100%;
+}
+
+/* Variants */
+.btn-primary {
+  background: var(--rainbow-primary);
+  color: white;
+  box-shadow: var(--shadow-rainbow);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-primary);
+  border: 2px solid transparent;
+  background: linear-gradient(white, white) padding-box,
+              var(--rainbow-secondary) border-box;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--text-primary);
+  border: 2px solid var(--border-color);
+}
+
+.btn-danger {
+  background: var(--rainbow-danger);
+  color: white;
+}
+
+.btn-success {
+  background: var(--rainbow-success);
+  color: white;
+}
+
+/* States */
+.btn-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn-loading {
+  cursor: wait;
+}
+
+/* Spinner */
+.btn-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  position: absolute;
+}
+
+.btn-text {
+  transition: opacity 0.2s ease-in-out;
+}
+
+.btn-text-hidden {
+  opacity: 0;
+}
+
+/* Add button specific styles */
+.btn-add {
+  width: 100%;
+  margin-top: var(--spacing-sm);
+}

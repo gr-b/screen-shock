@@ -1,0 +1,28 @@
+.description-page {
+  min-height: 100vh;
+  padding: var(--spacing-lg);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.page-content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: var(--spacing-xl) 0;
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  margin-bottom: var(--spacing-xl);
+}
+
+@media (max-width: 768px) {
+  .description-page {
+    padding: var(--spacing-sm);
+  }
+  
+  .page-content {
+    padding: var(--spacing-md) 0;
+  }
+}
