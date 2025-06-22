@@ -12,7 +12,7 @@ COPY frontend/ ./frontend/
 
 # Install frontend dependencies and build
 WORKDIR /app/frontend
-RUN ls -la && npm install && npm run build
+RUN ls -la && npm install && NODE_ENV=production npm run build
 
 # Stage 2: Python backend with static file serving
 FROM python:3.11-slim

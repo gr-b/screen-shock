@@ -1,9 +1,7 @@
 // Real API service for connecting to the backend
 
-// In production (Railway), the API will be served from the same domain
-// In development, use the local backend server
-const API_BASE_URL = process.env.REACT_APP_API_URL || 
-  (process.env.NODE_ENV === 'production' ? '' : 'http://localhost:8000');
+// No need for complex API URL logic - just use relative URLs
+// Works in both development (with proxy) and production (same domain)
 
 class ApiError extends Error {
   constructor(message, status, response) {
@@ -35,7 +33,7 @@ const handleResponse = async (response) => {
 
 export const api = {
   async generateConfig(description) {
-    const response = await fetch(`${API_BASE_URL}/api/generate-config`, {
+    const response = await fetch('/api/generate-config', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -47,7 +45,7 @@ export const api = {
   },
 
   async evaluateCaptureForTrigger(screenshot, blocklist, allowlist) {
-    const response = await fetch(`${API_BASE_URL}/api/evaluate-capture-for-trigger`, {
+    const response = await fetch('/api/evaluate-capture-for-trigger', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -63,7 +61,7 @@ export const api = {
   },
 
   async deliverStimulus(pavlokToken) {
-    const response = await fetch(`${API_BASE_URL}/api/deliver-stimulus`, {
+    const response = await fetch('/api/deliver-stimulus', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
