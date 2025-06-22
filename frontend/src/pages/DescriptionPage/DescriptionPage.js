@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './DescriptionPage.css';
 import Button from '../../components/Button/Button';
 import { TextArea } from '../../components/Input/Input';
+import api from '../../services/api';
 
 const DescriptionPage = ({ onNext }) => {
   const [description, setDescription] = useState('');

@@ -14,12 +14,11 @@
   background: var(--background);
   border-radius: var(--border-radius);
   border: 1px solid var(--border-color);
-  align-items: flex-start;
+  align-items: flex-end;
 }
 
 .list-input {
   flex: 1;
-  margin-bottom: 0;
 }
 
 .list-input .input-group {
@@ -27,15 +26,16 @@
 }
 
 .remove-btn {
-  margin-top: var(--spacing-lg); /* Align with input field */
   flex-shrink: 0;
-  min-width: 40px;
-  height: 48px;
-  padding: 0;
+  min-width: 48px !important;
+  width: 48px !important;
+  height: 48px !important;
+  padding: 0 !important;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.2rem;
+  margin-bottom: 0;
 }
 
 @media (max-width: 768px) {
