@@ -1,6 +1,9 @@
 // Real API service for connecting to the backend
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+// In production (Railway), the API will be served from the same domain
+// In development, use the local backend server
+const API_BASE_URL = process.env.REACT_APP_API_URL || 
+  (process.env.NODE_ENV === 'production' ? '' : 'http://localhost:8000');
 
 class ApiError extends Error {
   constructor(message, status, response) {

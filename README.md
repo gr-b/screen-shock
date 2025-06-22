@@ -190,10 +190,36 @@ Modern browsers require HTTPS for screen capture in production. For development,
 ### API Key Issues
 Ensure your OpenAI API key is set and has access to GPT-4 with vision capabilities.
 
+## Deployment
+
+### Railway (Recommended)
+
+Deploy the full stack application to Railway with a single container:
+
+```bash
+# From project root
+docker build -f backend/Dockerfile .
+```
+
+See [DEPLOY.md](DEPLOY.md) for detailed deployment instructions.
+
+### Environment Variables for Production
+
+Set these in Railway:
+- `OPENROUTER_API_KEY` - Your OpenRouter API key
+- `OPENAI_API_KEY` - Your OpenAI API key (alternative)
+
+### Architecture
+
+- **Single Container**: React frontend + FastAPI backend
+- **Static File Serving**: FastAPI serves built React files  
+- **SPA Routing**: Proper React Router support
+- **Health Checks**: Built-in monitoring endpoints
+
 ## Next Steps
 
-- [ ] Implement actual Pavlok API integration
 - [ ] Add user authentication
-- [ ] Implement data persistence
+- [ ] Implement data persistence  
 - [ ] Add configuration presets
 - [ ] Mobile app companion
+- [ ] Add application monitoring
