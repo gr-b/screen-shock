@@ -44,34 +44,29 @@ Here is the schema for the response: {schema}
 Provide a JSON response with "allowlist" and "blocklist". Each list should contain objects with "website" and "intent". The intent is crucial. For blocklist items, "all" is a valid intent.
 """
 
-STATUS_PROMPT_TEMPLATE = """You are a compliance checker. You MUST return a JSON object with a "result" key containing ALL websites from the provided lists.
+STATUS_PROMPT_TEMPLATE = """
 
-**Your Task:**
-1. You will receive an allowlist and blocklist of websites
-2. You MUST return a compliance status (true/false) for EVERY SINGLE website in both lists
-3. Do NOT analyze what's in the screenshot - just return all websites with their status
+You are a focus compliance overseer. You will be given one screenshot of what the user is doing on their laptop.
+You must determine if they have done anything that is not allowed. 
+You will be given an allowlist and a blocklist. Each list has multiple entries, where each entry specifies behavior that is either explicitly allowed
+or disallowed for that website.
+If the screenshot shows the user doing something that you deem to be disallowed based on the blocklist for a given website, then return "true"
+for that website. Otherwise, return "false".
+
+Please return your results in the "result" key of the output. It should be a dict from website to boolean.
 
 **Rules:**
 - Allowlist websites: {allowlist}
 - Blocklist websites: {blocklist}
 
-**Compliance Logic:**
-- Allowlist websites should be `true` (compliant) unless you see them being misused
-- Blocklist websites should be `false` (non-compliant) if visible, `true` if not visible
-
-**MANDATORY:** Your response must include every website from both the allowlist AND blocklist. Count them:
-- Allowlist has websites that need status
-- Blocklist has websites that need status
-- Your result object must have entries for ALL of them
-
 **Required JSON Format:**
 ```json
 {{
   "result": {{
-    "github.com": true,
-    "stackoverflow.com": true,
-    "facebook.com": false,
-    "youtube.com": true
+    "github.com": false,
+    "stackoverflow.com": false,
+    "facebook.com": true,
+    "youtube.com": false
   }}
 }}
 ```
