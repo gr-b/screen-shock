@@ -70,10 +70,7 @@ class CheckSchema(BaseModel):
 async def generate_list_client(
     text: str, 
     model: str = "gpt-4o",
-    system_prompt: Optional[str] = None,
     temperature: float = 0.2,
-    max_tokens: int = 1000,
-    api_key: Optional[str] = None
 ) -> Dict[str, Any]:
     """
     Generate an allowlist and blocklist for a focus task.
@@ -81,18 +78,12 @@ async def generate_list_client(
     Args:
         text: Input text prompt describing the user's task
         model: The model to use (default: gpt-4o)
-        system_prompt: Optional system prompt for context
         temperature: Sampling temperature (0-1)
-        max_tokens: Maximum tokens to generate
-        api_key: API key (will use environment variable if not provided)
         
     Returns:
         Dictionary containing the response and metadata
     """
     try:
-        # Set API key if provided
-        if api_key:
-            os.environ["OPENAI_API_KEY"] = api_key
             
         messages = []
         # Add user message
@@ -124,10 +115,6 @@ async def get_status_client(
     allowlist: List[Dict[str, str]],
     blocklist: List[Dict[str, str]],
     model: str = "gpt-4o",
-    system_prompt: Optional[str] = None,
-    temperature: float = 0.2,
-    max_tokens: int = 1000,
-    api_key: Optional[str] = None
 ) -> Dict[str, Any]:
     """
     Get status analysis from image and text input using vision models
@@ -146,15 +133,7 @@ async def get_status_client(
         Dictionary containing the response and metadata
     """
     try:
-        # Set API key if provided
-        if api_key:
-            os.environ["OPENAI_API_KEY"] = api_key
-            
         messages = []
-        
-        # Add system prompt if provided
-        if system_prompt:
-            messages.append({"role": "system", "content": system_prompt})
         
         prompt = STATUS_PROMPT_TEMPLATE.format(
             allowlist=json.dumps(allowlist),
@@ -180,8 +159,6 @@ async def get_status_client(
         response = await acompletion(
             model=model,
             messages=messages,
-            temperature=temperature,
-            max_tokens=max_tokens,
             response_format=StatusResponseSchema
         )
         
