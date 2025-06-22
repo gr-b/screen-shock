@@ -7,6 +7,23 @@ import LoadingOverlay from './components/LoadingOverlay/LoadingOverlay';
 import { ErrorModal } from './components/Modal/Modal';
 import api from './services/api';
 
+// Header Component
+const Header = () => {
+  return (
+    <header className="app-header">
+      <div className="header-content">
+        <div className="header-left">
+          <h2 className="header-title">Screen Shock</h2>
+        </div>
+        <nav className="header-nav">
+          <a href="#about" className="nav-link">About</a>
+          <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="nav-link">Github</a>
+        </nav>
+      </div>
+    </header>
+  );
+};
+
 function App() {
   const [currentPage, setCurrentPage] = useState('description');
   const [config, setConfig] = useState(null);
@@ -73,6 +90,7 @@ function App() {
 
   return (
     <div className="App">
+      <Header />
       {renderCurrentPage()}
       
       <LoadingOverlay 

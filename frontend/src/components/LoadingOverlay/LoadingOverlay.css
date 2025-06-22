@@ -20,8 +20,8 @@
 .spinner-large {
   width: 40px;
   height: 40px;
-  border: 3px solid rgba(102, 126, 234, 0.3);
-  border-top: 3px solid #667eea;
+  border: 3px solid rgba(105, 23, 21, 0.3);
+  border-top: 3px solid #691715;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto var(--spacing-md);

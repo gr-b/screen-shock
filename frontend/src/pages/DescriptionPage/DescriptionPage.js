@@ -35,12 +35,12 @@ const DescriptionPage = ({ onNext }) => {
   return (
     <div className="description-page">
       <div className="page-content">
-        <h1 className="rainbow-text">Screen Shock</h1>
-        <p className="subtitle">Describe what you want to start or stop doing</p>
+        <h1 className="rainbow-text">Get some Pavlov help to finally change your habits</h1>
+        <p className="subtitle">Describe the behavior you're trying to change and choose your reinforcement signal</p>
         
         <TextArea
-          label="Your Goal"
-          placeholder="e.g., I want to stop checking social media during work hours..."
+          label="Whenever I..."
+          placeholder="watch youtube comedy videos, shock me&#10;go to Reddit, beep me"
           value={description}
           onChange={handleDescriptionChange}
           error={error}

@@ -4,6 +4,7 @@
   animation: fadeIn 0.3s ease-in-out;
   position: relative;
   overflow: hidden;
+  background-color: #F0E7DC;
 }
 
 .config-page::before {
@@ -13,21 +14,18 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--rainbow-bg);
-  background-size: 400% 400%;
-  animation: gradientShift 12s ease infinite;
-  opacity: 0.15;
+  background-color: #F0E7DC;
   z-index: -1;
 }
 
 .config-section {
-  background: var(--card-background-rainbow);
+  background: white;
   backdrop-filter: blur(15px);
   border-radius: var(--border-radius);
   padding: var(--spacing-lg);
   margin-bottom: var(--spacing-lg);
-  box-shadow: var(--shadow-rainbow);
-  border: 2px solid transparent;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   background-clip: padding-box;
   position: relative;
 }
@@ -39,19 +37,15 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--rainbow-accent);
-  background-size: 200% 200%;
-  animation: rainbow 8s ease infinite;
+  background-color: #F0E7DC;
   border-radius: var(--border-radius);
   opacity: 0.1;
   z-index: -1;
 }
 
 .section-title {
-  background: var(--rainbow-accent);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--text-primary);
+  font-weight: 600;
 }
 
 .section-description {

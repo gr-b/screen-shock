@@ -4,6 +4,7 @@
   animation: fadeIn 0.3s ease-in-out;
   position: relative;
   overflow: hidden;
+  background-color: #F0E7DC;
 }
 
 .monitoring-page::before {
@@ -13,19 +14,16 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--rainbow-full);
-  background-size: 400% 400%;
-  animation: gradientShift 8s ease infinite;
-  opacity: 0.08;
+  background-color: #F0E7DC;
   z-index: -1;
 }
 
 .page-content {
-  background: var(--card-background-rainbow);
+  background: white;
   backdrop-filter: blur(20px);
   border-radius: var(--border-radius);
-  box-shadow: var(--shadow-rainbow);
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   padding: var(--spacing-lg);
 }
 
@@ -43,7 +41,7 @@
 .pulse-ring {
   width: 120px;
   height: 120px;
-  border: 4px solid rgba(102, 126, 234, 0.3);
+  border: 4px solid rgba(105, 23, 21, 0.3);
   border-radius: 50%;
   position: absolute;
   animation: pulse-ring 2s infinite;
@@ -52,7 +50,7 @@
 .pulse-dot {
   width: 80px;
   height: 80px;
-  background: var(--rainbow-success);
+  background: #691715;
   border-radius: 50%;
   position: relative;
   top: 20px;
@@ -86,10 +84,7 @@
   display: block;
   font-size: 2rem;
   font-weight: 700;
-  background: var(--rainbow-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #691715;
 }
 
 .stat-label {
@@ -105,17 +100,15 @@
 .debug-section {
   margin-top: var(--spacing-xl);
   padding-top: var(--spacing-lg);
-  border-top: 2px solid rgba(102, 126, 234, 0.2);
+  border-top: 2px solid rgba(105, 23, 21, 0.2);
 }
 
 .debug-toggle {
   width: 100%;
   margin-bottom: var(--spacing-md);
-  background: var(--card-background);
+  background: white;
   backdrop-filter: blur(10px);
-  border: 2px solid transparent;
-  background: linear-gradient(white, white) padding-box,
-              var(--rainbow-accent) border-box;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .debug-content {
@@ -126,10 +119,8 @@
   color: var(--text-primary);
   margin-bottom: var(--spacing-md);
   text-align: center;
-  background: var(--rainbow-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #691715;
+  font-weight: 600;
 }
 
 .debug-empty {
@@ -149,11 +140,11 @@
 }
 
 .capture-item {
-  background: var(--card-background);
+  background: white;
   border-radius: var(--border-radius);
   padding: var(--spacing-sm);
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   animation: fadeIn 0.5s ease-in-out;
   position: relative;
   overflow: hidden;
@@ -166,9 +157,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: var(--rainbow-accent);
-  background-size: 200% 200%;
-  animation: rainbow 3s ease infinite;
+  background: #691715;
 }
 
 .capture-header {
@@ -209,25 +198,20 @@
 }
 
 .capture-response h4 {
-  font-size: 0.875rem;
   color: var(--text-primary);
   margin-bottom: var(--spacing-xs);
-  background: var(--rainbow-secondary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
 .capture-response pre {
-  background: var(--background);
-  padding: var(--spacing-xs);
-  border-radius: calc(var(--border-radius) / 2);
-  font-size: 0.75rem;
-  color: var(--text-secondary);
+  background: #f8f9fa;
+  padding: var(--spacing-sm);
+  border-radius: 4px;
+  font-size: 0.8rem;
   overflow-x: auto;
-  border: 1px solid var(--border-color);
-  max-height: 100px;
-  overflow-y: auto;
+  border: 1px solid #e9ecef;
+  color: var(--text-primary);
 }
 
 @media (max-width: 768px) {
@@ -240,18 +224,19 @@
   }
   
   .stats-container {
+    flex-direction: column;
     gap: var(--spacing-md);
   }
   
   .pulse-ring {
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
   }
   
   .pulse-dot {
     width: 60px;
     height: 60px;
-    top: 20px;
-    left: 20px;
+    top: 10px;
+    left: 10px;
   }
 }
