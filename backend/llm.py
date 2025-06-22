@@ -60,7 +60,7 @@ class ResponseSchema(BaseModel):
 
 
 class StatusResponseSchema(BaseModel):
-    __root__: Dict[str, bool]
+    result: Dict[str, bool]
 
 
 class CheckSchema(BaseModel):
@@ -161,9 +161,13 @@ async def get_status_client(
             messages=messages,
             response_format=StatusResponseSchema
         )
+        try:
+            content = json.loads(response.choices[0].message.content)["result"]
+        except Exception as e:
+            raise Exception(f"Error parsing response: {e}")
         
         return {
-            "content": json.loads(response.choices[0].message.content).__root__,
+            "content": content,
             "model": response.model,
             "usage": response.usage.dict() if response.usage else None
         }
