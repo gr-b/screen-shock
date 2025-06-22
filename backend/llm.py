@@ -10,27 +10,38 @@ from pydantic import BaseModel, RootModel
 litellm.set_verbose = False
 
 FOCUS_PROMPT_TEMPLATE = """You are an expert assistant that helps users focus on their tasks.
-Based on the user's goal, you need to generate a list of websites to allow and a list of websites to block and partical topic you want to block or allow.
+Your goal is to generate a curated allowlist and blocklist of websites based on the user's stated objective.
+The user's goal might include what they want to do and what they want to avoid. You must consider both.
 
-Here is an example of a request about " I want to program for the next two hours":
+For example, if a user says "I want to write an essay about AI and stop procrastinating on Twitter", you should:
+1. Identify the core task: "write an essay about AI". This means you should allow websites for research and writing.
+2. Identify the explicit distraction: "procrastinating on Twitter". This means you should block Twitter.
+3. Infer other potential distractions and block them as well (e.g., other social media, video streaming sites).
+
+Here is an example of a good response for the goal: "I want to program for the next two hours and avoid getting distracted by news sites":
 
 {{
     "allowlist": [
         {{"website": "github.com", "intent": "all"}},
         {{"website": "stackoverflow.com", "intent": "all"}},
+        {{"website": "developer.mozilla.org", "intent": "all"}},
         {{"website": "chatgpt.com", "intent": "all"}},
         {{"website": "gemini.com", "intent": "all"}}
     ],
     "blocklist": [
-        {{"website": "youtube.com", "intent": "music videos, gaming"}},
+        {{"website": "youtube.com", "intent": "non-programming videos"}},
         {{"website": "instagram.com", "intent": "all"}},
-        {{"website": "reddit.com", "intent": "non-programming related content"}}
+        {{"website": "reddit.com", "intent": "non-programming subreddits"}},
+        {{"website": "cnn.com", "intent": "all"}},
+        {{"website": "bbc.com/news", "intent": "all"}}
     ]
 }}
 
 User's goal: {text}
 
-Here is the schema for the reponse: {schema}
+Here is the schema for the response: {schema}
+
+Provide a JSON response with "allowlist" and "blocklist". Each list should contain objects with "website" and "intent". The intent is crucial. For blocklist items, "all" is a valid intent.
 """
 
 STATUS_PROMPT_TEMPLATE = """You are an expert at analyzing user activity from a screenshot.
