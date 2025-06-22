@@ -1,9 +1,12 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import List, Dict
 import httpx
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 
 from llm import (
@@ -23,11 +26,21 @@ app = FastAPI(title="Screen Shock API", version="1.0.0")
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],  # React dev server
-    allow_credentials=True,
-    allow_methods=["*"],
+    allow_origins=["*"],  # Allow all origins for production deployment
+    allow_credentials=False,  # Set to False when using allow_origins=["*"]
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
+
+# Static file serving
+static_dir = Path(__file__).parent / "static"
+if static_dir.exists():
+    # Mount static files for CSS, JS, images, etc.
+    # React build puts CSS/JS in build/static/, so we need to mount the nested static directory
+    static_assets_dir = static_dir / "static"
+    if static_assets_dir.exists():
+        app.mount("/static", StaticFiles(directory=static_assets_dir), name="static")
 
 class GenerateConfigRequest(BaseModel):
     description: str
@@ -44,9 +57,18 @@ class DeliverStimulusResponse(BaseModel):
     success: bool
     message: str
 
-@app.get("/")
-async def root():
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy", "message": "Screen Shock API is running"}
+
+@app.get("/api/")
+async def api_root():
     return {"message": "Screen Shock API is running"}
+
+@app.options("/api/{path:path}")
+async def options_handler(path: str):
+    """Handle CORS preflight requests for API routes"""
+    return {"message": "OK"}
 
 @app.post("/api/generate-config", response_model=ResponseSchema)
 async def generate_config(payload: GenerateConfigRequest):
@@ -56,7 +78,12 @@ async def generate_config(payload: GenerateConfigRequest):
     print(payload)
     result = await generate_list_client(text=payload.description, model="openrouter/google/gemini-2.5-pro")
     print(result)
+    print(f"Received generate-config request: {payload.description}")
+    
+    result = await generate_list_client(text=payload.description, model="openrouter/google/gemini-2.5-flash")
+
     if result.get("error"):
+        print(f"LLM Error: {result['error']}")
         raise HTTPException(status_code=500, detail=result["error"])
     
     content = result.get("content")
@@ -153,6 +180,27 @@ async def deliver_stimulus(payload: DeliverStimulusRequest):
         raise HTTPException(status_code=500, detail="Timeout connecting to Pavlok API")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to deliver stimulus: {str(e)}")
+
+# Serve React app for all non-API routes (SPA routing) - MUST BE LAST
+@app.get("/{path:path}")
+async def serve_frontend_routes(path: str = ""):
+    """Serve React app for all non-API routes (SPA routing)"""
+    # Don't serve SPA for API routes or static assets
+    if path.startswith("api/") or path.startswith("static/"):
+        raise HTTPException(status_code=404, detail="Not found")
+    
+    static_file = static_dir / "index.html"
+    if static_file.exists():
+        return FileResponse(static_file, media_type="text/html")
+    else:
+        # Debug: show what files are actually available
+        files = list(static_dir.glob("*")) if static_dir.exists() else []
+        return {
+            "error": "Frontend not found", 
+            "static_dir": str(static_dir),
+            "static_dir_exists": static_dir.exists(),
+            "files": [str(f) for f in files]
+        }
 
 if __name__ == "__main__":
     import uvicorn
