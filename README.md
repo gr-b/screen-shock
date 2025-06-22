@@ -24,7 +24,12 @@ A web application that monitors user screen activity and delivers stimuli via Pa
 
 2. Install Python dependencies:
    ```bash
-   pip install fastapi uvicorn litellm python-multipart
+   pip install -r requirements.txt
+   ```
+   
+   Or with uv:
+   ```bash
+   uv pip install -r requirements.txt
    ```
 
 3. Set your OpenAI API key:
@@ -137,8 +142,10 @@ Deliver stimulus via Pavlok device.
 - Debug panel showing captures and API responses
 
 ### ⚡ Pavlok Integration
-- Automatic stimulus delivery when blocklist items are detected
-- Configurable token-based authentication
+- **Real Pavlok API Integration**: Uses the official Pavlok API v5
+- **Multiple Stimulus Types**: Supports beep, vibration, and shock
+- **Configurable Intensity**: Adjustable stimulus strength (1-255)
+- **Token Authentication**: Secure Bearer token authentication
 
 ### 🔧 Configuration Management
 - Dynamic allowlist/blocklist editing
@@ -169,6 +176,7 @@ REACT_APP_API_URL=http://localhost:8000
 **Backend:**
 ```
 OPENAI_API_KEY=your-api-key-here
+OPENROUTER_API_KEY=your-openrouter-key-here  # If using OpenRouter models
 ```
 
 ## Troubleshooting

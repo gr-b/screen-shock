@@ -4,7 +4,7 @@ from litellm import acompletion
 import litellm
 import os
 import json
-from pydantic import BaseModel
+from pydantic import BaseModel, RootModel
 
 # Configure LiteLLM
 litellm.set_verbose = False
@@ -14,21 +14,21 @@ Based on the user's goal, you need to generate a list of websites to allow and a
 
 Here is an example of a request about " I want to program for the next two hours":
 
-{
+{{
     "allowlist": [
-        {"website": "github.com", "intent": "all"},
-        {"website": "stackoverflow.com", "intent": "all"},
-        {"website": "chatgpt.com", "intent": "all"},
-        {"website": "gemini.com", "intent": "all"}
+        {{"website": "github.com", "intent": "all"}},
+        {{"website": "stackoverflow.com", "intent": "all"}},
+        {{"website": "chatgpt.com", "intent": "all"}},
+        {{"website": "gemini.com", "intent": "all"}}
     ],
     "blocklist": [
-        {"website": "youtube.com", "intent": "music videos, gaming"},
-        {"website": "instagram.com", "intent": "all"},
-        {"website": "reddit.com", "intent": "non-programming related content"}
+        {{"website": "youtube.com", "intent": "music videos, gaming"}},
+        {{"website": "instagram.com", "intent": "all"}},
+        {{"website": "reddit.com", "intent": "non-programming related content"}}
     ]
-]
+}}
 
-User's goal: "{text}"
+User's goal: {text}
 
 Here is the schema for the reponse: {schema}
 """

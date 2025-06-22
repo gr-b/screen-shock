@@ -2,6 +2,9 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Dict
+import httpx
+import os
+from dotenv import load_dotenv
 
 from llm import (
     generate_list_client,
@@ -9,10 +12,6 @@ from llm import (
     Website,
     ResponseSchema
 )
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from typing import List, Dict
-from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -55,7 +54,7 @@ async def generate_config(payload: GenerateConfigRequest):
     Generate allowlist and blocklist based on user's description.
     """
     result = await generate_list_client(text=payload.description, model="openrouter/google/gemini-2.5-flash")
-    
+
     if result.get("error"):
         raise HTTPException(status_code=500, detail=result["error"])
     
@@ -90,32 +89,54 @@ async def evaluate_capture_for_trigger(payload: EvaluateCaptureRequest):
 @app.post("/api/deliver-stimulus", response_model=DeliverStimulusResponse)
 async def deliver_stimulus(payload: DeliverStimulusRequest):
     """
-    Deliver stimulus via Pavlok device.
+    Deliver stimulus via Pavlok device using the real Pavlok API.
     """
-    # TODO: Implement actual Pavlok API integration
-    # For now, just simulate the stimulus delivery
-    
     try:
         # Validate token format (basic check)
         if not payload.pavlok_token or len(payload.pavlok_token) < 10:
             raise HTTPException(status_code=400, detail="Invalid Pavlok token")
         
-        # Here you would integrate with the actual Pavlok API
-        # import requests
-        # pavlok_response = requests.post(
-        #     "https://pavlok-mvp.herokuapp.com/api/v1/stimuli/shock/",
-        #     headers={"Authorization": f"Bearer {payload.pavlok_token}"},
-        #     json={"value": 50}  # Shock intensity
-        # )
-        
-        # For now, simulate success
-        return DeliverStimulusResponse(
-            success=True,
-            message="Stimulus delivered successfully"
-        )
+        # Call the real Pavlok API
+        async with httpx.AsyncClient() as client:
+            pavlok_response = await client.post(
+                "https://api.pavlok.com/api/v5/stimulus/send",
+                headers={
+                    "Authorization": f"Bearer {payload.pavlok_token}",
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "stimulus": {
+                        "stimulusType": "beep",  # Can be "beep", "vibration", or "shock"
+                        "stimulusValue": 100    # Intensity (1-255)
+                    }
+                },
+                timeout=10.0
+            )
+            
+            if pavlok_response.status_code == 200:
+                return DeliverStimulusResponse(
+                    success=True,
+                    message="Stimulus delivered successfully"
+                )
+            else:
+                # Log the error for debugging
+                error_detail = f"Pavlok API error: {pavlok_response.status_code}"
+                try:
+                    error_data = pavlok_response.json()
+                    error_detail += f" - {error_data}"
+                except:
+                    error_detail += f" - {pavlok_response.text}"
+                
+                raise HTTPException(
+                    status_code=500, 
+                    detail=f"Failed to deliver stimulus: {error_detail}"
+                )
         
     except HTTPException:
         raise
+    except httpx.TimeoutException:
+        raise HTTPException(status_code=500, detail="Timeout connecting to Pavlok API")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to deliver stimulus: {str(e)}")
 
