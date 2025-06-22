@@ -36,7 +36,7 @@ const ConfigPage = ({ config, onNext }) => {
         <h1>Configure Your Monitoring</h1>
         
         <div className="config-section">
-          <h2 className="section-title">Allowlist</h2>
+          <h2 className="section-title">It's OK if I do this..</h2>
           <p className="section-description">Websites and activities you want to encourage</p>
           <ConfigList
             items={allowlist}
@@ -49,7 +49,7 @@ const ConfigPage = ({ config, onNext }) => {
         </div>
 
         <div className="config-section">
-          <h2 className="section-title">Blocklist</h2>
+          <h2 className="section-title">Alert me when I do that</h2>
           <p className="section-description">Websites and activities you want to avoid</p>
           <ConfigList
             items={blocklist}
