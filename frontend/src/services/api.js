@@ -1,7 +1,9 @@
 // Real API service for connecting to the backend
 
-// No need for complex API URL logic - just use relative URLs
-// Works in both development (with proxy) and production (same domain)
+// Dynamic API URL based on window location
+const getBaseUrl = () => {
+  return window.location.hostname === 'screenshot.me' ? 'https://screenshot.me' : 'http://localhost:8000';
+};
 
 class ApiError extends Error {
   constructor(message, status, response) {
@@ -33,7 +35,7 @@ const handleResponse = async (response) => {
 
 export const api = {
   async generateConfig(description) {
-    const response = await fetch('/api/generate-config', {
+    const response = await fetch(`${getBaseUrl()}/api/generate-config`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -45,7 +47,7 @@ export const api = {
   },
 
   async evaluateCaptureForTrigger(screenshot, blocklist, allowlist) {
-    const response = await fetch('/api/evaluate-capture-for-trigger', {
+    const response = await fetch(`${getBaseUrl()}/api/evaluate-capture-for-trigger`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -61,7 +63,7 @@ export const api = {
   },
 
   async deliverStimulus(pavlokToken) {
-    const response = await fetch('/api/deliver-stimulus', {
+    const response = await fetch(`${getBaseUrl()}/api/deliver-stimulus`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
