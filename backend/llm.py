@@ -5,7 +5,7 @@ import litellm
 import os
 import json
 from pydantic import BaseModel, RootModel
-
+from loguru import logger
 # Configure LiteLLM
 litellm.set_verbose = False
 
@@ -44,20 +44,41 @@ Here is the schema for the response: {schema}
 Provide a JSON response with "allowlist" and "blocklist". Each list should contain objects with "website" and "intent". The intent is crucial. For blocklist items, "all" is a valid intent.
 """
 
-STATUS_PROMPT_TEMPLATE = """You are an expert at analyzing user activity from a screenshot.
-Your task is to determine if the user's activity in the screenshot complies with their stated focus goals, defined by an allowlist and a blocklist of websites and their intents.
+STATUS_PROMPT_TEMPLATE = """You are a compliance checker. You MUST return a JSON object with a "result" key containing ALL websites from the provided lists.
 
-Here are the lists:
-Allowlist: {allowlist}
-Blocklist: {blocklist}
+**Your Task:**
+1. You will receive an allowlist and blocklist of websites
+2. You MUST return a compliance status (true/false) for EVERY SINGLE website in both lists
+3. Do NOT analyze what's in the screenshot - just return all websites with their status
 
-Analyze the provided screenshot and identify all websites being visited and all user activities.
-For each website and activity, determine if it is allowed according to the lists.
-The primary value is the intent. e.g. if the user is on youtube.com, but the intent is "listening to study music" and "youtube.com" is on the allowlist with "study music" as intent, then it should be allowed.
+**Rules:**
+- Allowlist websites: {allowlist}
+- Blocklist websites: {blocklist}
 
-Return a JSON object where keys are the identified websites or activities (e.g., "youtube.com", "watching videos", "scrolling social media") and values are booleans (true for allowed, false for blocked).
+**Compliance Logic:**
+- Allowlist websites should be `true` (compliant) unless you see them being misused
+- Blocklist websites should be `false` (non-compliant) if visible, `true` if not visible
 
-Here is the JSON schema for the response: {schema}
+**MANDATORY:** Your response must include every website from both the allowlist AND blocklist. Count them:
+- Allowlist has websites that need status
+- Blocklist has websites that need status
+- Your result object must have entries for ALL of them
+
+**Required JSON Format:**
+```json
+{{
+  "result": {{
+    "github.com": true,
+    "stackoverflow.com": true,
+    "facebook.com": false,
+    "youtube.com": true
+  }}
+}}
+```
+
+**Schema:** {schema}
+
+Return the JSON with ALL websites from the allowlist and blocklist included in the result object.
 """
 
 
@@ -108,12 +129,16 @@ async def generate_list_client(
             response_format=ResponseSchema
         )
         
+        raw_content = response.choices[0].message.content
+        logger.debug(f"Raw LLM response content: {raw_content}")
+
         return {
-            "content": json.loads(response.choices[0].message.content),
+            "content": json.loads(raw_content),
             "model": response.model
         }
             
     except Exception as e:
+        logger.error(f"Error in generate_list_client: {str(e)}", exc_info=True)
         return {
             "error": str(e),
             "content": None,
@@ -155,9 +180,9 @@ async def get_status_client(
         content = [{"type": "text", "text": prompt}]
         
         # Use provided base64 image
+        print(content)
         # Assume JPEG if no format specified
-        if not image_base64.startswith('data:'):
-            image_base64 = f"data:image/jpeg;base64,{image_base64}"
+        image_base64 = f"data:image/jpeg;base64,{image_base64}"
         
         content.append({
             "type": "image_url",
@@ -170,26 +195,41 @@ async def get_status_client(
         response = await acompletion(
             model=model,
             messages=messages,
-            response_format=StatusResponseSchema
+            # Remove response_format to avoid schema issues
         )
-        try:
-            content = json.loads(response.choices[0].message.content)["result"]
-        except Exception as e:
-            raise Exception(f"Error parsing response: {e}")
         
-        return {
-            "content": content,
-            "model": response.model,
-            "usage": response.usage.dict() if response.usage else None
-        }
+        raw_content = response.choices[0].message.content
+        logger.debug(f"Raw LLM response content: {raw_content}")
+
+        # Parse the JSON response, extracting and decoding any JSON code block if present
+        try:
+            # Try to extract JSON from a code block if present
+            if raw_content.strip().startswith("```json"):
+                # Remove the code block markers
+                json_str = raw_content.strip()
+                json_str = json_str.lstrip("`").lstrip("json").strip()
+                if json_str.endswith("```"):
+                    json_str = json_str[:-3].strip()
+            else:
+                json_str = raw_content
+
+            parsed_response = json.loads(json_str)
+            return {
+                "content": parsed_response.get('result', {}),
+                "model": response.model,
+            }
+        except json.JSONDecodeError:
+            # If it's not valid JSON, return empty result
+            logger.warning(f"Failed to parse JSON response: {raw_content}")
+            return {
+                "content": {},
+                "model": response.model,
+            }
             
     except Exception as e:
-        return {
-            "error": str(e),
-            "content": None,
-            "model": model,
-            "usage": None
-        }
+        logger.error(f"Error in get_status_client: {str(e)}", exc_info=True)
+        raise e
+
 
 # Example usage
 async def example_usage():

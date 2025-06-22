@@ -76,11 +76,9 @@ async def generate_config(payload: GenerateConfigRequest):
     Generate allowlist and blocklist based on user's description.
     """
     print(payload)
-    result = await generate_list_client(text=payload.description, model="openrouter/google/gemini-2.5-pro")
-    print(result)
-    print(f"Received generate-config request: {payload.description}")
-    
+    # result = await generate_list_client(text=payload.description, model="openrouter/google/gemini-2.5-pro")
     result = await generate_list_client(text=payload.description, model="openrouter/google/gemini-2.5-flash")
+    print(result)
 
     if result.get("error"):
         print(f"LLM Error: {result['error']}")
@@ -113,19 +111,13 @@ async def evaluate_capture_for_trigger(payload: EvaluateCaptureRequest):
     blocklist_dicts = [b.model_dump() for b in payload.blocklist]
     
     result = await get_status_client(
-        model="openrouter/google/gemini-2.5-flash-lite-preview-06-17",
+        model="openrouter/google/gemini-2.5-flash",
         image_base64=payload.screenshot,
         allowlist=allowlist_dicts,
         blocklist=blocklist_dicts
     )
-    
-    if result.get("error"):
-        raise HTTPException(status_code=500, detail=result["error"])
-        
-    if result.get("content") is None:
-        raise HTTPException(status_code=500, detail="Failed to evaluate capture from LLM.")
-
-    return result["content"]
+    print(result)
+    return result['content']
 
 @app.post("/api/deliver-stimulus", response_model=DeliverStimulusResponse)
 async def deliver_stimulus(payload: DeliverStimulusRequest):
@@ -166,7 +158,7 @@ async def deliver_stimulus(payload: DeliverStimulusRequest):
                 try:
                     error_data = pavlok_response.json()
                     error_detail += f" - {error_data}"
-                except:
+                except Exception as _:
                     error_detail += f" - {pavlok_response.text}"
                 
                 raise HTTPException(
