@@ -18,7 +18,7 @@ from llm import (
 
 load_dotenv()
 
-
+os.environ["OPENROUTER_API_KEY"] = os.getenv("OPENROUTER_API_KEY")
 
 
 app = FastAPI(title="Screen Shock API", version="1.0.0")
@@ -75,6 +75,9 @@ async def generate_config(payload: GenerateConfigRequest):
     """
     Generate allowlist and blocklist based on user's description.
     """
+    print(payload)
+    result = await generate_list_client(text=payload.description, model="openrouter/google/gemini-2.5-pro")
+    print(result)
     print(f"Received generate-config request: {payload.description}")
     
     result = await generate_list_client(text=payload.description, model="openrouter/google/gemini-2.5-flash")
@@ -83,12 +86,23 @@ async def generate_config(payload: GenerateConfigRequest):
         print(f"LLM Error: {result['error']}")
         raise HTTPException(status_code=500, detail=result["error"])
     
-    if not result.get("content"):
-        print("No content returned from LLM")
+    content = result.get("content")
+    if not content:
         raise HTTPException(status_code=500, detail="Failed to generate configuration from LLM.")
 
-    print(f"Returning config: {result['content']}")
-    return result["content"]
+    # The LLM sometimes returns a list of strings instead of a list of Website objects.
+    # This manually converts strings to the expected Website structure.
+    for key in ["allowlist", "blocklist"]:
+        if key in content and content.get(key):
+            corrected_list = []
+            for item in content[key]:
+                if isinstance(item, str):
+                    corrected_list.append({"website": item, "intent": "all"})
+                else:
+                    corrected_list.append(item)
+            content[key] = corrected_list
+
+    return content
 
 @app.post("/api/evaluate-capture-for-trigger", response_model=Dict[str, bool])
 async def evaluate_capture_for_trigger(payload: EvaluateCaptureRequest):
