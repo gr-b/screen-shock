@@ -49,16 +49,27 @@ export const mockApi = {
     return { allowlist, blocklist };
   },
 
-  async evaluateCaptureForTrigger(screenshot, blocklist) {
+  async evaluateCaptureForTrigger(screenshot, blocklist, allowlist) {
     await delay(500); // Simulate processing time
     
-    // Mock evaluation - randomly trigger some blocklist items
+    // Mock evaluation - randomly trigger some blocklist and allowlist items
     const triggers = {};
     
+    // Process blocklist items
     blocklist.forEach(item => {
-      // Simulate detection logic
-      const websiteTrigger = Math.random() > 0.7; // 30% chance
-      const intentTrigger = Math.random() > 0.8; // 20% chance
+      // Simulate detection logic - higher chance for blocklist triggers
+      const websiteTrigger = Math.random() > 0.6; // 40% chance
+      const intentTrigger = Math.random() > 0.7; // 30% chance
+      
+      triggers[item.website] = websiteTrigger;
+      triggers[item.intent] = intentTrigger;
+    });
+    
+    // Process allowlist items (typically lower trigger rates)
+    allowlist.forEach(item => {
+      // Simulate detection logic - lower chance for allowlist triggers
+      const websiteTrigger = Math.random() > 0.8; // 20% chance
+      const intentTrigger = Math.random() > 0.9; // 10% chance
       
       triggers[item.website] = websiteTrigger;
       triggers[item.intent] = intentTrigger;
@@ -67,14 +78,14 @@ export const mockApi = {
     return triggers;
   },
 
-  async deliverStimulus(pavlokToken, triggerReason) {
+  async deliverStimulus(pavlokToken) {
     await delay(300); // Simulate stimulus delivery
     
-    console.log(`Mock stimulus delivered for: ${triggerReason}`);
+    console.log(`Mock stimulus delivered with token: ${pavlokToken.substring(0, 10)}...`);
     
     return {
       success: true,
-      message: `Stimulus delivered successfully for ${triggerReason}`
+      message: 'Stimulus delivered successfully'
     };
   }
 };

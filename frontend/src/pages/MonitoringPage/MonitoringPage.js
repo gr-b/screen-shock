@@ -6,6 +6,8 @@ import { mockApi } from '../../services/mockApi';
 
 const MonitoringPage = ({ config, onStop }) => {
   const [stats, setStats] = useState({ captures: 0, triggers: 0 });
+  const [captureHistory, setCaptureHistory] = useState([]);
+  const [debugExpanded, setDebugExpanded] = useState(false);
   const { isCapturing, error, startCapture, stopCapture } = useScreenCapture();
 
   const handleCapture = useCallback(async (base64Image) => {
@@ -13,11 +15,22 @@ const MonitoringPage = ({ config, onStop }) => {
       // Evaluate the capture
       const triggers = await mockApi.evaluateCaptureForTrigger(
         base64Image,
-        config.blocklist
+        config.blocklist,
+        config.allowlist
       );
 
       // Update capture count
       setStats(prev => ({ ...prev, captures: prev.captures + 1 }));
+
+      // Add to capture history for debug
+      const captureData = {
+        id: Date.now(),
+        timestamp: new Date().toLocaleTimeString(),
+        image: `data:image/jpeg;base64,${base64Image}`,
+        response: triggers
+      };
+      
+      setCaptureHistory(prev => [captureData, ...prev.slice(0, 9)]); // Keep last 10
 
       // Check if any triggers were activated
       const activeTriggers = Object.entries(triggers).filter(([key, value]) => value);
@@ -35,7 +48,7 @@ const MonitoringPage = ({ config, onStop }) => {
     } catch (error) {
       console.error('Error processing capture:', error);
     }
-  }, [config.blocklist, config.pavlokToken]);
+  }, [config.blocklist, config.allowlist, config.pavlokToken]);
 
   const handleStop = () => {
     stopCapture();
@@ -43,17 +56,25 @@ const MonitoringPage = ({ config, onStop }) => {
   };
 
   useEffect(() => {
-    // Start capturing when component mounts
-    startCapture(handleCapture).catch((err) => {
-      console.error('Failed to start capture:', err);
-      // Handle permission error or other issues
-    });
+    let mounted = true;
+    
+    const initializeCapture = async () => {
+      if (mounted) {
+        try {
+          await startCapture(handleCapture);
+        } catch (err) {
+          console.error('Failed to start capture:', err);
+        }
+      }
+    };
 
-    // Cleanup when component unmounts
+    initializeCapture();
+
     return () => {
+      mounted = false;
       stopCapture();
     };
-  }, [startCapture, stopCapture, handleCapture]);
+  }, []); // Empty dependency array to prevent double initialization
 
   return (
     <div className="monitoring-page">
@@ -97,6 +118,47 @@ const MonitoringPage = ({ config, onStop }) => {
           >
             Stop Monitoring
           </Button>
+        </div>
+
+        {/* Debug Section */}
+        <div className="debug-section">
+          <Button
+            variant="outline"
+            onClick={() => setDebugExpanded(!debugExpanded)}
+            className="debug-toggle"
+          >
+            {debugExpanded ? '🔼' : '🔽'} Debug Info ({captureHistory.length} captures)
+          </Button>
+          
+          {debugExpanded && (
+            <div className="debug-content">
+              <h3>Recent Captures & Server Responses</h3>
+              {captureHistory.length === 0 ? (
+                <p className="debug-empty">No captures yet...</p>
+              ) : (
+                <div className="capture-grid">
+                  {captureHistory.map((capture) => (
+                    <div key={capture.id} className="capture-item">
+                      <div className="capture-header">
+                        <span className="capture-time">{capture.timestamp}</span>
+                      </div>
+                      <div className="capture-image">
+                        <img 
+                          src={capture.image} 
+                          alt={`Capture at ${capture.timestamp}`}
+                          loading="lazy"
+                        />
+                      </div>
+                      <div className="capture-response">
+                        <h4>Server Response:</h4>
+                        <pre>{JSON.stringify(capture.response, null, 2)}</pre>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

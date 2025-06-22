@@ -44,31 +44,57 @@
 /* Variants */
 .btn-primary {
   background: var(--rainbow-primary);
+  background-size: 200% 200%;
+  animation: rainbow 3s ease infinite;
   color: white;
   box-shadow: var(--shadow-rainbow);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+  transform: rotate(45deg);
+  animation: shimmer 2s infinite;
 }
 
 .btn-secondary {
-  background: transparent;
+  background: var(--card-background);
   color: var(--text-primary);
-  border: 2px solid transparent;
+  border: 3px solid transparent;
   background: linear-gradient(white, white) padding-box,
               var(--rainbow-secondary) border-box;
+  background-size: 200% 200%;
+  animation: rainbow 4s ease infinite;
+  position: relative;
+  overflow: hidden;
 }
 
 .btn-outline {
-  background: transparent;
+  background: var(--card-background);
   color: var(--text-primary);
-  border: 2px solid var(--border-color);
+  border: 2px solid transparent;
+  background: linear-gradient(white, white) padding-box,
+              var(--rainbow-accent) border-box;
 }
 
 .btn-danger {
   background: var(--rainbow-danger);
+  background-size: 200% 200%;
+  animation: rainbow 3s ease infinite;
   color: white;
 }
 
 .btn-success {
   background: var(--rainbow-success);
+  background-size: 200% 200%;
+  animation: rainbow 3s ease infinite;
   color: white;
 }
 

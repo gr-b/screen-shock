@@ -2,14 +2,49 @@
   min-height: 100vh;
   padding: var(--spacing-lg);
   animation: fadeIn 0.3s ease-in-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.config-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--rainbow-bg);
+  background-size: 400% 400%;
+  animation: gradientShift 12s ease infinite;
+  opacity: 0.15;
+  z-index: -1;
 }
 
 .config-section {
-  background: var(--card-background);
+  background: var(--card-background-rainbow);
+  backdrop-filter: blur(15px);
   border-radius: var(--border-radius);
   padding: var(--spacing-lg);
   margin-bottom: var(--spacing-lg);
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-rainbow);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  position: relative;
+}
+
+.config-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--rainbow-accent);
+  background-size: 200% 200%;
+  animation: rainbow 8s ease infinite;
+  border-radius: var(--border-radius);
+  opacity: 0.1;
+  z-index: -1;
 }
 
 .section-title {

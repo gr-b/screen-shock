@@ -6,17 +6,22 @@
   --rainbow-success: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
   --rainbow-warning: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
   --rainbow-danger: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+  --rainbow-full: linear-gradient(45deg, #ff0000, #ff8000, #ffff00, #80ff00, #00ff00, #00ff80, #00ffff, #0080ff, #0000ff, #8000ff, #ff00ff, #ff0080);
+  --rainbow-bg: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c, #4facfe, #00f2fe, #43e97b, #38f9d7, #fa709a, #fee140);
+  --rainbow-animated: linear-gradient(270deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7, #dda0dd, #98d8c8, #f7dc6f, #bb8fce);
   
   --text-primary: #333;
   --text-secondary: #666;
   --text-light: #999;
-  --background: #f8f9fa;
-  --card-background: #ffffff;
-  --border-color: #e9ecef;
-  --border-radius: 8px;
+  --text-on-rainbow: #ffffff;
+  --background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+  --card-background: rgba(255, 255, 255, 0.95);
+  --card-background-rainbow: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.95) 100%);
+  --border-color: rgba(102, 126, 234, 0.3);
+  --border-radius: 12px;
   --border-radius-large: 24px;
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  --shadow-rainbow: 0 4px 20px rgba(102, 126, 234, 0.2);
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --shadow-rainbow: 0 8px 32px rgba(102, 126, 234, 0.3);
   
   --spacing-xs: 8px;
   --spacing-sm: 16px;
@@ -35,6 +40,8 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   background: var(--background);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
   color: var(--text-primary);
   line-height: 1.6;
   min-height: 100vh;
@@ -107,6 +114,44 @@ h3 {
   }
   50% {
     transform: scale(1.1);
+  }
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes rainbow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
   }
 }
 
