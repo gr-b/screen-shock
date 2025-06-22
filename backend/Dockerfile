@@ -8,11 +8,11 @@ FROM node:18-alpine AS frontend-builder
 WORKDIR /app
 
 # Copy frontend package files
-COPY frontend/package*.json ./frontend/
+COPY frontend/package.json frontend/package-lock.json ./frontend/
 
 # Install frontend dependencies
 WORKDIR /app/frontend
-RUN npm ci
+RUN ls -la && npm ci
 
 # Copy frontend source code
 COPY frontend/ ./
