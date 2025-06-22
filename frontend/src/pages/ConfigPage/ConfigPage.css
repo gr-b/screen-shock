@@ -1,0 +1,59 @@
+.config-page {
+  min-height: 100vh;
+  padding: var(--spacing-lg);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.config-section {
+  background: var(--card-background);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  box-shadow: var(--shadow);
+}
+
+.section-title {
+  background: var(--rainbow-accent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.section-description {
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-md);
+}
+
+.token-input-group {
+  display: flex;
+  gap: var(--spacing-sm);
+  align-items: flex-start;
+}
+
+.token-input {
+  flex: 1;
+}
+
+.toggle-token-btn {
+  margin-top: var(--spacing-lg); /* Align with input field */
+  flex-shrink: 0;
+}
+
+.begin-monitoring-btn {
+  margin-top: var(--spacing-lg);
+}
+
+@media (max-width: 768px) {
+  .config-page {
+    padding: var(--spacing-sm);
+  }
+  
+  .token-input-group {
+    flex-direction: column;
+  }
+  
+  .toggle-token-btn {
+    margin-top: 0;
+    width: 100%;
+  }
+}

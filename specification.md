@@ -70,6 +70,9 @@ Screen Shock is a web application that monitors user screen activity and deliver
   "screenshot": "base64 encoded image",
   "blocklist": [
     {"website": "string", "intent": "string"}
+  ],
+  "allowlist": [
+    {"website": "string", "intent": "string"}
   ]
 }
 ```
@@ -89,7 +92,6 @@ Screen Shock is a web application that monitors user screen activity and deliver
 ```json
 {
   "pavlok_token": "string",
-  "trigger_reason": "string"
 }
 ```
 

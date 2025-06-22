@@ -1,0 +1,103 @@
+.monitoring-page {
+  min-height: 100vh;
+  padding: var(--spacing-lg);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.monitoring-status {
+  text-align: center;
+  padding: var(--spacing-xl);
+}
+
+.status-indicator {
+  position: relative;
+  display: inline-block;
+  margin-bottom: var(--spacing-lg);
+}
+
+.pulse-ring {
+  width: 120px;
+  height: 120px;
+  border: 4px solid rgba(102, 126, 234, 0.3);
+  border-radius: 50%;
+  position: absolute;
+  animation: pulse-ring 2s infinite;
+}
+
+.pulse-dot {
+  width: 80px;
+  height: 80px;
+  background: var(--rainbow-success);
+  border-radius: 50%;
+  position: relative;
+  top: 20px;
+  left: 20px;
+  animation: pulse-dot 2s infinite;
+}
+
+.monitoring-info {
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-lg);
+}
+
+.error-info {
+  color: #ff6b6b;
+  margin-bottom: var(--spacing-lg);
+  font-weight: 500;
+}
+
+.stats-container {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-xl);
+  margin: var(--spacing-xl) 0;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+  background: var(--rainbow-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-label {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.stop-monitoring-btn {
+  margin-top: var(--spacing-lg);
+}
+
+@media (max-width: 768px) {
+  .monitoring-page {
+    padding: var(--spacing-sm);
+  }
+  
+  .monitoring-status {
+    padding: var(--spacing-md);
+  }
+  
+  .stats-container {
+    gap: var(--spacing-md);
+  }
+  
+  .pulse-ring {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .pulse-dot {
+    width: 60px;
+    height: 60px;
+    top: 20px;
+    left: 20px;
+  }
+}
