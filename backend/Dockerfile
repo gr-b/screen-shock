@@ -7,18 +7,12 @@ FROM node:18-alpine AS frontend-builder
 # Set working directory for frontend build
 WORKDIR /app
 
-# Copy frontend package files
-COPY frontend/package.json frontend/package-lock.json ./frontend/
+# Copy entire frontend directory
+COPY frontend/ ./frontend/
 
-# Install frontend dependencies
+# Install frontend dependencies and build
 WORKDIR /app/frontend
-RUN ls -la && npm ci
-
-# Copy frontend source code
-COPY frontend/ ./
-
-# Build the React app for production
-RUN npm run build
+RUN ls -la && npm install && npm run build
 
 # Stage 2: Python backend with static file serving
 FROM python:3.11-slim
