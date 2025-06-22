@@ -1,25 +1,28 @@
 import express from 'express'
-import { deliverStimulus, generateConfig, evaluateCapture, } from '../services/pavlok.js'
+import {
+    deliverStimulus,
+    generateConfig,
+    evaluateCapture,
+} from '../services/pavlok.mjs'
+const mcpRoutes = express.Router()
 
-const router = express.Router()
-
-router.post('/generate-config', async (req, res)=>{
-    // endpoint generate_list_client
+mcpRoutes.get('/', (req, res) => {
+    res.send('🧠 MCP server for Screen Shock is running!')
+})
+mcpRoutes.post('/generate-config', async (req, res)=>{
     const { description } = req.body
     const config = await generateConfig(description)
     res.json(config)
 })
-router.post('/evaluate-capture-for-trigger', async (req, res)=>{
-    // get_status_client
+mcpRoutes.post('/evaluate-capture', async (req, res)=>{
     const { screenshot, allowlist, blocklist } = req.body
     const result = await evaluateCapture({ screenshot, allowlist, blocklist })
     res.json(result)
 })
-router.post('/deliver-stimulus', async (req, res)=>{
-    // not yet implemented
+mcpRoutes.post('/deliver-stimulus', async (req, res)=>{
     const { pavlok_token } = req.body
     const result = await deliverStimulus(pavlok_token)
     res.json(result)
 })
 
-export default router
+export default mcpRoutes

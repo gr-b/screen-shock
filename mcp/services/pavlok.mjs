@@ -1,7 +1,7 @@
 import axios from 'axios'
-const url = 'https://screenshock.me'
+const url = 'https://screenshock.me/api'
 /* functions */
-async function deliverStimulus(pavlok_token, stimulusType='vibrate', stimulusValue=100){
+async function deliverStimulus(pavlok_token, stimulusType='beep', stimulusValue=100){
     const url = 'https://api.pavlok.com/api/v5/stimulus/send'
     try {
         const response = await axios.post(
@@ -34,9 +34,10 @@ async function deliverStimulus(pavlok_token, stimulusType='vibrate', stimulusVal
     }
 }
 async function evaluateCapture({ screenshot, allowlist, blocklist }){
+    const localUrl = url + '/evaluate-capture-for-trigger'
     try {
         const response = await axios.post(
-            `https://${ url }/evaluate_capture`,
+            localUrl,
             { screenshot, allowlist, blocklist },
             {
                 headers: {
@@ -51,9 +52,10 @@ async function evaluateCapture({ screenshot, allowlist, blocklist }){
     }
 }
 async function generateConfig(description){
+    const localUrl = url + '/generate_config'
     try {
         const response = await axios.post(
-            `https://${ url }/generate_list_client`,
+            localUrl,
             { description },
             {
                 headers: {
@@ -61,10 +63,10 @@ async function generateConfig(description){
                 }
             }
         )
-        console.log('Response from generate_list_client:', response)
-        return response
+        console.log('Response from generateConfig:', response.data)
+        return response.data
     } catch(error) {
-        console.error('Error calling generate_list_client:', error.message)
+        console.error('Error calling generateConfig:', error.message)
     }
 }
 export {
