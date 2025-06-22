@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './ConfigPage.css';
 import Button from '../../components/Button/Button';
 import Input from '../../components/Input/Input';
 import ConfigList from './ConfigList';
+
+const PAVLOK_TOKEN_KEY = 'pavlokBearerToken';
 
 const ConfigPage = ({ config, onNext }) => {
   const [allowlist, setAllowlist] = useState(config.allowlist || []);
@@ -10,6 +12,14 @@ const ConfigPage = ({ config, onNext }) => {
   const [pavlokToken, setPavlokToken] = useState('');
   const [tokenVisible, setTokenVisible] = useState(false);
   const [error, setError] = useState('');
+
+  // Load token from localStorage on component mount
+  useEffect(() => {
+    const savedToken = localStorage.getItem(PAVLOK_TOKEN_KEY);
+    if (savedToken) {
+      setPavlokToken(savedToken);
+    }
+  }, []);
 
   const handleBeginMonitoring = () => {
     if (!pavlokToken.trim()) {
@@ -26,7 +36,16 @@ const ConfigPage = ({ config, onNext }) => {
   };
 
   const handleTokenChange = (e) => {
-    setPavlokToken(e.target.value);
+    const newToken = e.target.value;
+    setPavlokToken(newToken);
+    
+    // Save to localStorage
+    if (newToken.trim()) {
+      localStorage.setItem(PAVLOK_TOKEN_KEY, newToken.trim());
+    } else {
+      localStorage.removeItem(PAVLOK_TOKEN_KEY);
+    }
+    
     if (error) setError('');
   };
 
