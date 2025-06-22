@@ -27,9 +27,10 @@ app = FastAPI(title="Screen Shock API", version="1.0.0")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Allow all origins for production deployment
-    allow_credentials=True,
-    allow_methods=["*"],
+    allow_credentials=False,  # Set to False when using allow_origins=["*"]
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 # Static file serving
@@ -64,19 +65,29 @@ async def health_check():
 async def api_root():
     return {"message": "Screen Shock API is running"}
 
+@app.options("/api/{path:path}")
+async def options_handler(path: str):
+    """Handle CORS preflight requests for API routes"""
+    return {"message": "OK"}
+
 @app.post("/api/generate-config", response_model=ResponseSchema)
 async def generate_config(payload: GenerateConfigRequest):
     """
     Generate allowlist and blocklist based on user's description.
     """
+    print(f"Received generate-config request: {payload.description}")
+    
     result = await generate_list_client(text=payload.description, model="openrouter/google/gemini-2.5-flash")
 
     if result.get("error"):
+        print(f"LLM Error: {result['error']}")
         raise HTTPException(status_code=500, detail=result["error"])
     
     if not result.get("content"):
+        print("No content returned from LLM")
         raise HTTPException(status_code=500, detail="Failed to generate configuration from LLM.")
 
+    print(f"Returning config: {result['content']}")
     return result["content"]
 
 @app.post("/api/evaluate-capture-for-trigger", response_model=Dict[str, bool])
