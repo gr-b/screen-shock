@@ -5,7 +5,7 @@ import ConfigPage from './pages/ConfigPage/ConfigPage';
 import MonitoringPage from './pages/MonitoringPage/MonitoringPage';
 import LoadingOverlay from './components/LoadingOverlay/LoadingOverlay';
 import { ErrorModal } from './components/Modal/Modal';
-import { mockApi } from './services/mockApi';
+import api from './services/api';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('description');
@@ -17,11 +17,12 @@ function App() {
     setLoading(true);
     
     try {
-      const generatedConfig = await mockApi.generateConfig(description);
+      const generatedConfig = await api.generateConfig(description);
       setConfig(generatedConfig);
       setCurrentPage('config');
     } catch (err) {
-      throw new Error('Failed to generate configuration');
+      console.error('API Error:', err);
+      throw new Error(err.message || 'Failed to generate configuration');
     } finally {
       setLoading(false);
     }
