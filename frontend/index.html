@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screen Shock</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Page 1: Initial Description -->
+        <div id="description-page" class="page active">
+            <div class="page-content">
+                <h1 class="rainbow-text">Screen Shock</h1>
+                <p class="subtitle">Describe what you want to start or stop doing</p>
+                
+                <div class="input-group">
+                    <label for="description-input">Your Goal</label>
+                    <textarea 
+                        id="description-input" 
+                        placeholder="e.g., I want to stop checking social media during work hours..."
+                        rows="4"
+                    ></textarea>
+                </div>
+                
+                <button id="start-monitoring-btn" class="btn btn-primary">
+                    <span class="btn-text">Start Monitoring</span>
+                    <div class="spinner hidden"></div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Page 2: Configuration Screen -->
+        <div id="config-page" class="page">
+            <div class="page-content">
+                <h1>Configure Your Monitoring</h1>
+                
+                <div class="config-section">
+                    <h2 class="section-title">Allowlist</h2>
+                    <p class="section-description">Websites and activities you want to encourage</p>
+                    <div id="allowlist-container" class="list-container">
+                        <!-- Dynamic allowlist items will be inserted here -->
+                    </div>
+                    <button id="add-allowlist-btn" class="btn btn-secondary add-btn">+ Add Item</button>
+                </div>
+
+                <div class="config-section">
+                    <h2 class="section-title">Blocklist</h2>
+                    <p class="section-description">Websites and activities you want to avoid</p>
+                    <div id="blocklist-container" class="list-container">
+                        <!-- Dynamic blocklist items will be inserted here -->
+                    </div>
+                    <button id="add-blocklist-btn" class="btn btn-secondary add-btn">+ Add Item</button>
+                </div>
+
+                <div class="config-section">
+                    <h2 class="section-title">Pavlok Integration</h2>
+                    <p class="section-description">Enter your Pavlok bearer token for stimulus delivery</p>
+                    <div class="token-input-group">
+                        <input 
+                            type="password" 
+                            id="pavlok-token" 
+                            placeholder="Enter your Pavlok bearer token"
+                            class="token-input"
+                        />
+                        <button id="toggle-token-btn" class="btn btn-outline">Hide</button>
+                    </div>
+                </div>
+
+                <button id="begin-monitoring-btn" class="btn btn-primary btn-large">
+                    Begin Screen Monitoring
+                </button>
+            </div>
+        </div>
+
+        <!-- Page 3: Monitoring State -->
+        <div id="monitoring-page" class="page">
+            <div class="page-content">
+                <div class="monitoring-status">
+                    <div class="status-indicator">
+                        <div class="pulse-ring"></div>
+                        <div class="pulse-dot"></div>
+                    </div>
+                    <h1>Monitoring Active</h1>
+                    <p class="monitoring-info">Screen capture is running every 2 seconds</p>
+                    
+                    <div class="stats-container">
+                        <div class="stat-item">
+                            <span class="stat-number" id="captures-count">0</span>
+                            <span class="stat-label">Captures</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="triggers-count">0</span>
+                            <span class="stat-label">Triggers</span>
+                        </div>
+                    </div>
+
+                    <button id="stop-monitoring-btn" class="btn btn-danger">
+                        Stop Monitoring
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Dialog -->
+        <div id="error-dialog" class="modal hidden">
+            <div class="modal-content">
+                <h3>Permission Required</h3>
+                <p id="error-message">Screen capture permission is required for monitoring to work.</p>
+                <div class="modal-actions">
+                    <button id="retry-permission-btn" class="btn btn-primary">Try Again</button>
+                    <button id="close-error-btn" class="btn btn-secondary">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="loading-overlay hidden">
+            <div class="loading-content">
+                <div class="spinner-large"></div>
+                <p>Processing your request...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
