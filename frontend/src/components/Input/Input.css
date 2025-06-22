@@ -12,11 +12,11 @@
 .input, .textarea {
   width: 100%;
   padding: var(--spacing-sm);
-  border: 2px solid var(--border-color);
+  border: 2px solid #e0e0e0;
   border-radius: var(--border-radius);
   font-size: 1rem;
   transition: all 0.2s ease-in-out;
-  background: var(--card-background);
+  background: white;
   font-family: inherit;
   height: 48px;
   box-sizing: border-box;
@@ -24,10 +24,8 @@
 
 .input:focus, .textarea:focus {
   outline: none;
-  border: 2px solid transparent;
-  background: linear-gradient(white, white) padding-box,
-              var(--rainbow-accent) border-box;
-  box-shadow: var(--shadow-rainbow);
+  border: 2px solid #691715;
+  box-shadow: 0 0 0 3px rgba(105, 23, 21, 0.1);
 }
 
 .textarea {
@@ -37,18 +35,17 @@
 }
 
 .input-error {
-  border-color: #ff6b6b;
+  border-color: #dc3545;
 }
 
 .input-error:focus {
-  background: linear-gradient(white, white) padding-box,
-              #ff6b6b border-box;
-  box-shadow: 0 0 20px rgba(255, 107, 107, 0.2);
+  border-color: #dc3545;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
 }
 
 .input-error-text {
   display: block;
-  color: #ff6b6b;
+  color: #dc3545;
   font-size: 0.875rem;
   margin-top: var(--spacing-xs);
 }

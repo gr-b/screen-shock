@@ -4,6 +4,7 @@
   animation: fadeIn 0.3s ease-in-out;
   position: relative;
   overflow: hidden;
+  background-color: #F0E7DC;
 }
 
 .description-page::before {
@@ -13,10 +14,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--rainbow-animated);
-  background-size: 400% 400%;
-  animation: gradientShift 10s ease infinite;
-  opacity: 0.1;
+  background-color: #F0E7DC;
   z-index: -1;
 }
 
@@ -24,11 +22,11 @@
   max-width: 800px;
   margin: 0 auto;
   padding: var(--spacing-xl) 0;
-  background: var(--card-background-rainbow);
+  background: white;
   backdrop-filter: blur(10px);
   border-radius: var(--border-radius);
-  box-shadow: var(--shadow-rainbow);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .subtitle {
@@ -36,10 +34,6 @@
   color: var(--text-secondary);
   font-size: 1.1rem;
   margin-bottom: var(--spacing-xl);
-  background: var(--rainbow-accent);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
   font-weight: 500;
 }
 
