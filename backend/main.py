@@ -9,6 +9,15 @@ from llm import (
     Website,
     ResponseSchema
 )
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import List, Dict
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
+
 
 app = FastAPI(title="Screen Shock API", version="1.0.0")
 
@@ -45,7 +54,7 @@ async def generate_config(payload: GenerateConfigRequest):
     """
     Generate allowlist and blocklist based on user's description.
     """
-    result = await generate_list_client(text=payload.description)
+    result = await generate_list_client(text=payload.description, model="openrouter/google/gemini-2.5-flash")
     
     if result.get("error"):
         raise HTTPException(status_code=500, detail=result["error"])
@@ -64,6 +73,7 @@ async def evaluate_capture_for_trigger(payload: EvaluateCaptureRequest):
     blocklist_dicts = [b.model_dump() for b in payload.blocklist]
     
     result = await get_status_client(
+        model="openrouter/google/gemini-2.5-flash-lite-preview-06-17",
         image_base64=payload.screenshot,
         allowlist=allowlist_dicts,
         blocklist=blocklist_dicts
